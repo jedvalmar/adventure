@@ -40,51 +40,57 @@ public class Item {
 		return name;
 	}
 
-	public void setName(String name) {
+	public Item setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public Item setDescription(String description) {
 		this.description = description;
+		return this;
 	}
 
 	public String getLongDescription() {
 		return longDescription;
 	}
 
-	public void setLongDescription(String longDescription) {
+	public Item setLongDescription(String longDescription) {
 		this.longDescription = longDescription;
+		return this;
 	}
 
 	public int getVolume() {
 		return volume;
 	}
 
-	public void setVolume(int volume) {
+	public Item setVolume(int volume) {
 		this.volume = volume;
+		return this;
 	}
 
 	public int getWeight() {
 		return weight;
 	}
 
-	public void setWeight(int weight) {
+	public Item setWeight(int weight) {
 		this.weight = weight;
+		return this;
 	}
 	
 	public boolean commandAllowed(Command command) {
 		CommandCondition commandCondition = this.commandConditionMap.get(command);
 		if (commandCondition != null) {
-			return commandCondition.conditional();			
+			return commandCondition.conditional(command.getState());			
 		}
 		return true;
 	}
 
-	public void addCommandCondition(Command command, CommandCondition commandCondition) {
+	public Item addCommandCondition(Command command, CommandCondition commandCondition) {
 		this.commandConditionMap.put(command, commandCondition);
+		return this;
 	}
 }

@@ -2,7 +2,6 @@ package org.adventure.commands;
 
 import org.adventure.GameState;
 import org.adventure.Item;
-import org.adventure.Room;
 
 public class DropCommand extends ItemCommand {
 
@@ -12,9 +11,9 @@ public class DropCommand extends ItemCommand {
 	}
 
 	@Override
-	public void action(Room room) {
+	public void action() {
 		// Is the item in your hand.
-		room.addItem(getCurrentItem());
+		getState().getCurrentRoom().addItems(getCurrentItem());
 		//Remove it from your hand.
 		Item leftItem = GameState.getState().getCharacter().getLeftHand();
 		if (leftItem != null && leftItem.equals(getCurrentItem())) {

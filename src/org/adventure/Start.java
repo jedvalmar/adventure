@@ -2,7 +2,9 @@ package org.adventure;
 import java.io.IOException;
 
 import org.adventure.commands.CommandCondition;
-import org.adventure.commands.MoveCommand;
+import org.adventure.commands.CommandHandler;
+import org.adventure.commands.navigation.Direction;
+import org.adventure.commands.navigation.MoveCommand;
 
 
 public class Start {
@@ -16,49 +18,48 @@ public class Start {
 		
 		GameState state = GameState.getState();
 		
-		Room room1 = new Room();
-		room1.setDescription("You are in a field of wheat." + 
+		Room room1 = new Room().setDescription("You are in a field of wheat." + 
 		"To the North is a Farm House in the distance, to the South a lake, to the East are mountains.");
 		
-		Room room2 = new Room();
-		room2.setDescription("You aproach a small farm house with a thatched roof...");
+		Room room2 = new Room().setDescription("You aproach a small farm house with a thatched roof...");
 		
-		MoveCommand move1_2 = new MoveCommand(room2);
-		move1_2.addValidValue("N","North", "Go North");
-		room1.addCommand(move1_2);
+		//TODO:  This is going to be common code (bi-directional move command should be created to make this easier.)
+		room1.addCommand(new MoveCommand(room2, Direction.NORTH));
+		room2.addCommand(new MoveCommand(room1, Direction.SOUTH));
+		final Item gloves = new Item()
+			.setName("gloves")
+			.setDescription("A pair of thick leather gloves.")
+			.setLongDescription("Workmans gloves.")
+			.setVolume(1)
+			.setWeight(1);
 		
-		MoveCommand move2_1 = new MoveCommand(room1);
-		move2_1.addValidValue("S","South","Go South");
-		room2.addCommand(move2_1);
-		
-		final Item gloves = new Item("gloves","A pair of thick leather gloves.", 1,1,"Workmans gloves.");
-		Container pot = new Container("pot", "Pot of boiling water.", 1, 1, "As you look closly, a knife seems to have fallen in the pot");
+		Container pot = new Container("pot", "A pot of boiling water.", 1, 1, "As you look closly, a knife seems to have fallen in the pot");
 		pot.addCommandCondition(GameState.getState().takeCommand, new CommandCondition() {
 			@Override
-			public boolean conditional() {
-				if (GameState.getState().getCharacter().isHolding(gloves)) {
+			public boolean conditional(GameState state) {
+				if (state.getCharacter().isHolding(gloves)) {
 					return true;
 				}
 				System.out.println("Ouch thats hot!");
 				return false;
 			}
 		});
-		
+		pot.addItem(new Item().setName("Knife").setDescription("A small knife."));
+		pot.setContentsVisible(true);
+		pot.setContentsPrefix("In the pot is ");
+		pot.setVolumeCapacity(5);
 		Room farmHouse = new Room();
 		farmHouse.setDescription("You are in a quient farm house.");
-		farmHouse.addItem(gloves,
-				pot);
-		MoveCommand leaveFarmhouse = new MoveCommand(room2);
-		leaveFarmhouse.addValidValue("go door");
-		farmHouse.addCommand(leaveFarmhouse);
+		farmHouse.addItems(gloves, pot);
 		
-		MoveCommand move2_farmhouse = new MoveCommand(farmHouse);
-		move2_farmhouse.addValidValue("Open Door","go Door");
-		room2.addCommand(move2_farmhouse);
+		//TODO:  Here is our bi-directional movement again.
+		farmHouse.addCommand(new MoveCommand(room2, Direction.DOOR));
+		room2.addCommand(new MoveCommand(farmHouse, Direction.DOOR));
 		
 		state.setCurrentRoom(farmHouse) ;
+		CommandHandler commandHandler = new CommandHandler();
 		while (state.isEnd() == false) {
-			state.getCurrentRoom().getCommand();			
+			commandHandler.promptUser();			
 		}
 		
 		System.out.println("Thank you, please come again.");

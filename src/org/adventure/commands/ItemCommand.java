@@ -2,7 +2,6 @@ package org.adventure.commands;
 
 import org.adventure.GameState;
 import org.adventure.Item;
-import org.adventure.Room;
 
 public abstract class ItemCommand extends Command{
 
@@ -55,9 +54,7 @@ public abstract class ItemCommand extends Command{
 
 
 	@Override
-	public void action(Room room) {
-		// TODO Auto-generated method stub
-		
+	public void action() {
 	}
 
 

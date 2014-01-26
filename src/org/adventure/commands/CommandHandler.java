@@ -2,24 +2,24 @@ package org.adventure.commands;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.adventure.GameState;
 
 
 
-public abstract class CommandHandler {
+public class CommandHandler {
+	GameState state = GameState.getState();
 
-	private List<Command> validCommands = new ArrayList<Command>();
-	
-	public abstract void processAction(Command command);
-	public abstract String getPrompt();
+	public void processAction(Command command) {
+		command.action();
+	}
 	
 	
 	
 	public CommandHandler() {
 		super();
+		List<Command> validCommands = state.getCurrentRoom().getValidCommands();
 		EndCommand endCommand = new EndCommand();
 		endCommand.addValidValue("Bye");
 		endCommand.addValidValue("Good Bye");
@@ -34,14 +34,11 @@ public abstract class CommandHandler {
 		validCommands.add(new DropCommand());
 		
 	}
-	public void addCommand(Command command) {
-		validCommands.add(command);
-	}
 	
-	public void getCommand() throws IOException {
+	public void promptUser() throws IOException {
 		  BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	      System.out.println("Room:");
-		  System.out.println(getPrompt());
+		  System.out.println(state.getCurrentRoom().getPrompt());
 		  System.out.println("Command:");
 	      String cmd = br.readLine();
 	      Command command = getCommand(cmd);
@@ -54,6 +51,7 @@ public abstract class CommandHandler {
 	}
 	
 	public Command getCommand(String cmdString) {
+		List<Command> validCommands = state.getCurrentRoom().getValidCommands();
 		for (Command command : validCommands) {
 			if (command.contains(cmdString)) {
 				return command;

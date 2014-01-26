@@ -3,11 +3,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adventure.commands.Command;
-import org.adventure.commands.CommandHandler;
 
 
 
-public class Room extends CommandHandler {
+public class Room {
+	private List<Command> validCommands = new ArrayList<Command>();
 	String description;
 	List<Item> items = new ArrayList<Item>();
 	
@@ -15,16 +15,11 @@ public class Room extends CommandHandler {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public Room setDescription(String description) {
 		this.description = description;
+		return this;
 	}
 
-	@Override
-	public void processAction(Command command) {
-		command.action(this);
-	}
-
-	@Override
 	public String getPrompt() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getDescription());
@@ -37,10 +32,11 @@ public class Room extends CommandHandler {
 		return sb.toString();
 	}
 	
-	public void addItem(Item... itemsToAdd) {
+	public Room addItems(Item... itemsToAdd) {
 		for (Item item : itemsToAdd) {
 			items.add(item);			
 		}
+		return this;
 	}
 
 	public void removeItem(Item item) {
@@ -55,4 +51,15 @@ public class Room extends CommandHandler {
 		}
 		return null;
 	}
+	
+	public Room addCommand(Command command) {
+		validCommands.add(command);
+		return this;
+	}
+
+	public List<Command> getValidCommands() {
+		return validCommands;
+	}
+	
+	
 }

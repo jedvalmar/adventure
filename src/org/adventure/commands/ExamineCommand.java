@@ -1,5 +1,4 @@
 package org.adventure.commands;
-import org.adventure.Room;
 
 
 public class ExamineCommand extends ItemCommand {
@@ -11,7 +10,7 @@ public class ExamineCommand extends ItemCommand {
 	}
 
 	@Override
-	public void action(Room room) {
+	public void action() {
 		System.out.println(getCurrentItem().getLongDescription());
 	}
 

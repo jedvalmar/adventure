@@ -7,6 +7,8 @@ public class Container extends Item {
 	private int volumeCapacity;
 	private ContainerType containerType;
 	private List<Item> items = new ArrayList<Item>();
+	private boolean contentsVisible = false;
+	private String contentsPrefix;
 	
 	public Container() {
 		super();
@@ -21,23 +23,42 @@ public class Container extends Item {
 		super(name, description, volume, weight);
 	}
 
+	
+	
+	@Override
+	public String getDescription() {
+		if (isContentsVisible()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(super.getDescription());
+			sb.append(getContentsPrefix());
+			for (Item item : items) {
+				sb.append(item.getDescription());
+				sb.append(",");
+			}
+			return sb.toString();
+		}
+		return super.getDescription();
+	}
+
 	public int getVolumeCapacity() {
 		return volumeCapacity;
 	}
 
-	public void setVolumeCapacity(int volumeCapacity) {
+	public Container setVolumeCapacity(int volumeCapacity) {
 		this.volumeCapacity = volumeCapacity;
+		return this;
 	}
 
 	public ContainerType getContainerType() {
 		return containerType;
 	}
 
-	public void setContainerType(ContainerType containerType) {
+	public Container setContainerType(ContainerType containerType) {
 		this.containerType = containerType;
+		return this;
 	}
 	
-	public void addItem(Item item) {
+	public Container addItem(Item item) {
 		//TODO: Check make sure there is capacity for the item.
 		//TODO: Need to get the current volume of the contents.
 		if (item.getVolume() > this.getVolumeCapacity() - this.getVolume()) {
@@ -46,6 +67,7 @@ public class Container extends Item {
 		else {
 			this.items.add(item);
 		}
+		return this;
 	}
 
 	@Override
@@ -68,6 +90,26 @@ public class Container extends Item {
 		}
 		
 		return weight;
+	}
+
+	
+	
+	public boolean isContentsVisible() {
+		return contentsVisible;
+	}
+
+	public Container setContentsVisible(boolean contentsVisible) {
+		this.contentsVisible = contentsVisible;
+		return this;
+	}
+
+	public String getContentsPrefix() {
+		return contentsPrefix;
+	}
+
+	public Container setContentsPrefix(String contentsPrefix) {
+		this.contentsPrefix = contentsPrefix;
+		return this;
 	}
 	
 	
