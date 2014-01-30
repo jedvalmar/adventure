@@ -4,13 +4,17 @@ package org.adventure.commands;
 public class ExamineCommand extends ItemCommand {
 
 	
-	@Override
-	public String getVerb() {
-		return "examine";
+	
+
+	public ExamineCommand() {
+		super();
+		this.addVerb("examine");
+		this.addVerb("look");
 	}
 
 	@Override
-	public void action() {
+	public void action(Command command) {
+		super.action(command);
 		System.out.println(getCurrentItem().getLongDescription());
 	}
 

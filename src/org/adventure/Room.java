@@ -2,12 +2,14 @@ package org.adventure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adventure.commands.Command;
+import org.adventure.commands.Action;
+import org.adventure.items.IItem;
+import org.adventure.items.Item;
 
 
 
-public class Room {
-	private List<Command> validCommands = new ArrayList<Command>();
+public class Room implements IContainer {
+	private List<Action> validCommands = new ArrayList<Action>();
 	String description;
 	List<Item> items = new ArrayList<Item>();
 	
@@ -25,7 +27,7 @@ public class Room {
 		sb.append(getDescription());
 		if (items.size() > 0) {
 			sb.append(" In the room is: ");
-			for (Item item : items) {
+			for (IItem item : items) {
 				sb.append(item.getDescription());
 			}			
 		}
@@ -39,7 +41,7 @@ public class Room {
 		return this;
 	}
 
-	public void removeItem(Item item) {
+	public void removeItem(IItem item) {
 		items.remove(item);
 	}
 	
@@ -52,14 +54,20 @@ public class Room {
 		return null;
 	}
 	
-	public Room addCommand(Command command) {
+	public Room addCommand(Action command) {
 		validCommands.add(command);
 		return this;
 	}
 
-	public List<Command> getValidCommands() {
+	public List<Action> getValidCommands() {
 		return validCommands;
 	}
-	
+
+	@Override
+	public boolean addItem(Item item) {
+		this.items.add(item);			
+		return true;
+	}
+
 	
 }

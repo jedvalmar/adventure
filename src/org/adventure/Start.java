@@ -5,6 +5,11 @@ import org.adventure.commands.CommandCondition;
 import org.adventure.commands.CommandHandler;
 import org.adventure.commands.navigation.Direction;
 import org.adventure.commands.navigation.MoveCommand;
+import org.adventure.items.Container;
+import org.adventure.items.Item;
+import org.adventure.items.Wearable;
+import org.adventure.items.WearableContainer;
+import org.adventure.items.WearableType;
 
 
 public class Start {
@@ -26,12 +31,20 @@ public class Start {
 		//TODO:  This is going to be common code (bi-directional move command should be created to make this easier.)
 		room1.addCommand(new MoveCommand(room2, Direction.NORTH));
 		room2.addCommand(new MoveCommand(room1, Direction.SOUTH));
-		final Item gloves = new Item()
+		final Item gloves = new Wearable(WearableType.GLOVES)
 			.setName("gloves")
 			.setDescription("A pair of thick leather gloves.")
 			.setLongDescription("Workmans gloves.")
 			.setVolume(1)
 			.setWeight(1);
+		
+		final Item coat = new WearableContainer(WearableType.JACKET, 5)
+		.setName("coat")
+		.setDescription("A warn cotton coat.")
+		.setLongDescription("A ragged coat with an inner pocket.")
+		.setVolume(1)
+		.setWeight(1);
+	
 		
 		Container pot = new Container("pot", "A pot of boiling water.", 1, 1, "As you look closly, a knife seems to have fallen in the pot");
 		pot.addCommandCondition(GameState.getState().takeCommand, new CommandCondition() {
@@ -44,13 +57,14 @@ public class Start {
 				return false;
 			}
 		});
-		pot.addItem(new Item().setName("Knife").setDescription("A small knife."));
 		pot.setContentsVisible(true);
 		pot.setContentsPrefix("In the pot is ");
 		pot.setVolumeCapacity(5);
+		pot.setVolume(1);
+		pot.addItem(new Item().setName("Knife").setDescription("A small knife."));
 		Room farmHouse = new Room();
 		farmHouse.setDescription("You are in a quient farm house.");
-		farmHouse.addItems(gloves, pot);
+		farmHouse.addItems(gloves, pot, coat);
 		
 		//TODO:  Here is our bi-directional movement again.
 		farmHouse.addCommand(new MoveCommand(room2, Direction.DOOR));

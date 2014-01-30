@@ -1,27 +1,31 @@
 package org.adventure.commands;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.adventure.GameState;
+public class Command {
 
+	private String verb;
+	private String subject;
+	private String object;
 
-public abstract class Command {
+	
+	public String getVerb() {
+		return verb;
+	}
+	public void setVerb(String verb) {
+		this.verb = verb;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+	public String getObject() {
+		return object;
+	}
+	public void setObject(String object) {
+		this.object = object;
+	}
 
-		private List<String> validValues = new ArrayList<String>();
-		
-		public abstract void action();
-
-		public Command addValidValue(String... validValue) {
-			for (String string : validValue) {
-				this.validValues.add(string.toLowerCase());				
-			}
-			return this;
-		}
-		
-		public boolean contains(String value) {
-			return this.validValues.contains(value.toLowerCase());
-		}
-		public GameState getState() {
-			return GameState.getState();
-		}
+	
+	
 }

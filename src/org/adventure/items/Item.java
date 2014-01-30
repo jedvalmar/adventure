@@ -1,18 +1,18 @@
-package org.adventure;
+package org.adventure.items;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.adventure.commands.Command;
+import org.adventure.commands.Action;
 import org.adventure.commands.CommandCondition;
 
-public class Item {
+public class Item implements IItem {
 	private String name;
 	private String description;
 	private String longDescription;
 	private int volume;
 	private int weight;
-	private Map<Command, CommandCondition> commandConditionMap = new HashMap<Command, CommandCondition>();
+	private Map<Action, CommandCondition> commandConditionMap = new HashMap<Action, CommandCondition>();
 	
 	public Item() {
 		super();
@@ -36,6 +36,10 @@ public class Item {
 		this.weight = weight;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adventure.IItem#getName()
+	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -45,6 +49,10 @@ public class Item {
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adventure.IItem#getDescription()
+	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}
@@ -54,6 +62,10 @@ public class Item {
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adventure.IItem#getLongDescription()
+	 */
+	@Override
 	public String getLongDescription() {
 		return longDescription;
 	}
@@ -63,6 +75,10 @@ public class Item {
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adventure.IItem#getVolume()
+	 */
+	@Override
 	public int getVolume() {
 		return volume;
 	}
@@ -72,6 +88,10 @@ public class Item {
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adventure.IItem#getWeight()
+	 */
+	@Override
 	public int getWeight() {
 		return weight;
 	}
@@ -81,7 +101,7 @@ public class Item {
 		return this;
 	}
 	
-	public boolean commandAllowed(Command command) {
+	public boolean commandAllowed(Action command) {
 		CommandCondition commandCondition = this.commandConditionMap.get(command);
 		if (commandCondition != null) {
 			return commandCondition.conditional(command.getState());			
@@ -89,8 +109,13 @@ public class Item {
 		return true;
 	}
 
-	public Item addCommandCondition(Command command, CommandCondition commandCondition) {
+	public IItem addCommandCondition(Action command, CommandCondition commandCondition) {
 		this.commandConditionMap.put(command, commandCondition);
 		return this;
+	}
+
+	@Override
+	public boolean is(String name) {
+		return this.getName().equals(name);
 	}
 }

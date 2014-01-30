@@ -1,43 +1,28 @@
 package org.adventure.commands;
 
 import org.adventure.GameState;
-import org.adventure.Item;
+import org.adventure.items.Item;
 
-public abstract class ItemCommand extends Command{
+public abstract class ItemCommand extends Action {
 
-	private Item currentItem = null;
-	
-	public abstract String getVerb();
-
+	private Item subject = null;
 	
 	public Item getCurrentItem() {
-		return currentItem;
+		return subject;
 	}
 
 
 	public void setCurrentItem(Item currentItem) {
-		this.currentItem = currentItem;
+		this.subject = currentItem;
 	}
 
 
 	@Override
-	public boolean contains(String value) {
-		// is the first word of value = 'examine' or 'look' 
-		// get the name of the object...
-		// Is the object in sight (in the room or in hands)
-		// Print the long description of the object.
-		
-		currentItem = null;
-		if (value.toLowerCase().startsWith(getVerb().toLowerCase())) {
-			String itemName = value.substring(getVerb().length() + 1);
-			currentItem = getItem(itemName);
-			return (currentItem != null);
-		}
-		
-		return false;
+	public void action(Command command) {
+		this.subject = getItem(command.getSubject());
 	}
 
-	
+
 	private Item getItem(String itemName) {
 		Item item = GameState.getState().getCurrentRoom().getItem(itemName);
 		if (item == null) {
@@ -46,47 +31,14 @@ public abstract class ItemCommand extends Command{
 				item = GameState.getState().getCharacter().getRightHand();
 			}
 		}
-		if (item.commandAllowed(this)) {
+		if (item != null && item.commandAllowed(this)) {
 			return item;			
-	}
+		}
 		return null;
 	}
 
 
-	@Override
-	public void action() {
-	}
-
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((currentItem == null) ? 0 : currentItem.hashCode());
-		return result;
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ItemCommand other = (ItemCommand) obj;
-		if (getVerb() == null) {
-			if (other.getVerb() != null)
-				return false;
-		} else if (!getVerb().equals(other.getVerb()))
-			return false;
-		return true;
-	}
-
-
-
 	
+
 	
 }

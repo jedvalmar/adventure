@@ -1,10 +1,10 @@
 package org.adventure.commands;
 
 
-public class EndCommand extends Command {
+public class EndCommand extends Action {
 
 	@Override
-	public void action() {
+	public void action(Command command) {
 		getState().setEnd(true);
 	}
 
