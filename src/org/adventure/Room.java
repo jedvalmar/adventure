@@ -11,7 +11,7 @@ import org.adventure.items.Item;
 public class Room implements IContainer {
 	private List<Action> validCommands = new ArrayList<Action>();
 	String description;
-	List<Item> items = new ArrayList<Item>();
+	List<IItem> items = new ArrayList<IItem>();
 	
 	public String getDescription() {
 		return description;
@@ -45,8 +45,8 @@ public class Room implements IContainer {
 		items.remove(item);
 	}
 	
-	public Item getItem(String itemName) {
-		for (Item item : items) {
+	public IItem getItem(String itemName) {
+		for (IItem item : items) {
 			if (item.getName().equals(itemName)) {
 				return item;
 			}
@@ -64,7 +64,7 @@ public class Room implements IContainer {
 	}
 
 	@Override
-	public boolean addItem(Item item) {
+	public boolean addItem(IItem item) {
 		this.items.add(item);			
 		return true;
 	}

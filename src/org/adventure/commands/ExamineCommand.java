@@ -8,14 +8,14 @@ public class ExamineCommand extends ItemCommand {
 
 	public ExamineCommand() {
 		super();
-		this.addVerb("examine");
-		this.addVerb("look");
+		this.addCommandPattern("examine <item>");
+		this.addCommandPattern("look <item>");
 	}
 
 	@Override
 	public void action(Command command) {
 		super.action(command);
-		System.out.println(getCurrentItem().getLongDescription());
+		System.out.println(getItem("<item>").getLongDescription());
 	}
 
 

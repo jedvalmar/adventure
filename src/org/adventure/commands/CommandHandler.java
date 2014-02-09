@@ -3,7 +3,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.adventure.GameState;
 
@@ -20,14 +19,14 @@ public class CommandHandler {
 		super();
 		List<Action> validCommands = state.getCurrentRoom().getValidCommands();
 		EndCommand endCommand = new EndCommand();
-		endCommand.addVerb("Bye");
-		endCommand.addVerb("Good Bye");
+		endCommand.addCommandPattern("Bye");
+		endCommand.addCommandPattern("Good Bye");
 		validCommands.add(endCommand);
 		ExamineCommand examineCommand = new ExamineCommand();
 		validCommands.add(examineCommand);
 		validCommands.add(GameState.getState().takeCommand);
 		MeCommand meCommand = new MeCommand();
-		meCommand.addVerb("me");
+		meCommand.addCommandPattern("me");
 		validCommands.add(meCommand);
 		
 		validCommands.add(new DropCommand());
@@ -54,7 +53,7 @@ public class CommandHandler {
 	public Action getCommand(Command command) {
 		List<Action> validCommands = state.getCurrentRoom().getValidCommands();
 		for (Action action : validCommands) {
-			if (action.contains(command.getVerb())) {
+			if (action.matches(command)) {
 				return action;
 			}
 		}
@@ -62,18 +61,8 @@ public class CommandHandler {
 	}
 	
 	private Command constructCommand(String cmd) {
-		 Command command = new Command();
-		 StringTokenizer tokens = new StringTokenizer(cmd);
-	     String verb = tokens.nextToken();
-	     command.setVerb(verb);
-	     if (tokens.hasMoreTokens()) {
-	    	 command.setSubject(tokens.nextToken());
-	    	 if (tokens.hasMoreTokens()) {
-	    		 tokens.nextToken();
-		    	 command.setSubject(tokens.nextToken());
-		    	 
-		     }
-	     }
+		 Command command = new Command(cmd);
+		 
 	      
 	     return command;
 	}

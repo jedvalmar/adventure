@@ -12,7 +12,7 @@ public class WearableContainer extends Wearable implements IContainer {
 	}
 
 	@Override
-	public boolean addItem(Item item) {
+	public boolean addItem(IItem item) {
 		return container.addItem(item);
 	}
 

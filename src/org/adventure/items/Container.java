@@ -8,7 +8,7 @@ import org.adventure.IContainer;
 public class Container extends Item implements IContainer {
 	private int volumeCapacity;
 	private WearableType containerType;
-	private List<Item> items = new ArrayList<Item>();
+	private List<IItem> items = new ArrayList<IItem>();
 	private boolean contentsVisible = false;
 	private String contentsPrefix;
 	
@@ -66,7 +66,7 @@ public class Container extends Item implements IContainer {
 	 * @see org.adventure.ICOntainer#addItem(org.adventure.Item)
 	 */
 	@Override
-	public boolean addItem(Item item) {
+	public boolean addItem(IItem item) {
 		//TODO: Check make sure there is capacity for the item.
 		//TODO: Need to get the current volume of the contents.
 			if (item.getVolume() > this.getVolumeCapacity() - this.getVolume()) {

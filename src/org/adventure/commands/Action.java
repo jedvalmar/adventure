@@ -7,20 +7,24 @@ import org.adventure.GameState;
 
 public abstract class Action {
 
-		private List<String> verbs = new ArrayList<String>();
+		private List<String> commandPatters = new ArrayList<String>();
 		
 		public abstract void action(Command command);
 
-		public Action addVerb(String... validValue) {
-			for (String string : validValue) {
-				this.verbs.add(string.toLowerCase());				
+		public Action addCommandPattern(String... commandPattern) {
+			for (String string : commandPattern) {
+				this.commandPatters.add(string.toLowerCase());				
 			}
 			return this;
 		}
 		
 		
-		public boolean contains(String value) {
-			return this.verbs.contains(value.toLowerCase());
+		public boolean matches(Command command) {
+			for (String commandPattern : this.commandPatters) {
+				if (command.matches(commandPattern))
+					return true;
+			}
+			return false;
 		}
 		public GameState getState() {
 			return GameState.getState();

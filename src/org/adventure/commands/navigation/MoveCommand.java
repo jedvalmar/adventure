@@ -10,13 +10,13 @@ public class MoveCommand extends Action {
 	public MoveCommand(Room roomToMoveTo, Direction direction) {
 		super();
 		this.roomToMoveTo = roomToMoveTo;
-		this.addVerb(direction.getValidValues());
+		this.addCommandPattern(direction.getValidValues());
 	}
 
 	public MoveCommand(Room roomToMoveTo, String... validValues) {
 		super();
 		this.roomToMoveTo = roomToMoveTo;
-		this.addVerb(validValues);
+		this.addCommandPattern(validValues);
 	}
 	
 	@Override

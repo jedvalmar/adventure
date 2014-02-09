@@ -14,23 +14,23 @@ import org.adventure.items.WearableType;
 public class Character implements IContainer {
 
 	private List<IContainer> containers = new ArrayList<IContainer>();
-	private Item leftHand;
-	private Item rightHand;
+	private IItem leftHand;
+	private IItem rightHand;
 	private Map<WearableType, List<IWearable>> clothing = new HashMap<WearableType, List<IWearable>>();
 	
-	public Item getLeftHand() {
+	public IItem getLeftHand() {
 		return leftHand;
 	}
 
-	public void setLeftHand(Item leftHand) {
+	public void setLeftHand(IItem leftHand) {
 		this.leftHand = leftHand;
 	}
 
-	public Item getRightHand() {
+	public IItem getRightHand() {
 		return rightHand;
 	}
 
-	public void setRightHand(Item rightHand) {
+	public void setRightHand(IItem rightHand) {
 		this.rightHand = rightHand;
 	}
 	
@@ -90,7 +90,7 @@ public class Character implements IContainer {
 	 * a free hand.  
 	 */
 	@Override
-	public boolean addItem(Item item) {
+	public boolean addItem(IItem item) {
 		if (getFreeHands() > 0) {
 			if (getRightHand() == null) {
 				setRightHand(item);

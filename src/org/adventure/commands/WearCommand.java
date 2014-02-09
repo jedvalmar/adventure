@@ -6,7 +6,7 @@ import org.adventure.items.IItem;
 public class WearCommand extends ItemCommand {
 	public WearCommand() {
 		super();
-		this.addVerb("wear");
+		this.addCommandPattern("wear <item>");
 	}
 	
 	@Override
@@ -15,12 +15,12 @@ public class WearCommand extends ItemCommand {
 		IItem leftHandItem = getState().getCharacter().getLeftHand();
 		IItem rightHandItem = getState().getCharacter().getRightHand();
 		
-		if (getCurrentItem().equals(rightHandItem)) {
-			GameState.getState().getCharacter().wear(getCurrentItem());
+		if (getItem("<item>").equals(rightHandItem)) {
+			GameState.getState().getCharacter().wear(getItem("<item>"));
 			getState().getCharacter().setRightHand(null);
 		}
-		else if (getCurrentItem().equals(leftHandItem)) {
-			GameState.getState().getCharacter().wear(getCurrentItem());
+		else if (getItem("<item>").equals(leftHandItem)) {
+			GameState.getState().getCharacter().wear(getItem("<item>"));
 			getState().getCharacter().setLeftHand(null);
 		}
 	}
