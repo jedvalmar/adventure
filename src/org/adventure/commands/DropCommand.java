@@ -1,8 +1,10 @@
 package org.adventure.commands;
 
-import org.adventure.GameState;
+import org.adventure.PlayerCharacter;
 import org.adventure.items.IItem;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DropCommand extends ItemCommand {
 
 	
@@ -14,20 +16,16 @@ public class DropCommand extends ItemCommand {
 
 
 	@Override
-	public void action(Command command) {
-		super.action(command);
+	public void action(Command command, PlayerCharacter character) {
+		super.action(command, character);
 		// Is the item in your hand.
-		getState().getCurrentRoom().addItems(getItem("<item>"));
-		//Remove it from your hand.
-		IItem leftItem = GameState.getState().getCharacter().getLeftHand();
-		if (leftItem != null && leftItem.equals(getItem("<item>"))) {
-			GameState.getState().getCharacter().setLeftHand(null);
+		IItem item = getItem("<item>", character);
+		if (character.isHolding(item)) {
+			item.setContainer(character.getCurrentRoom());			
+		}		
+		else {
+			character.sendMessage("Drop the what?");
 		}
-		IItem rightItem = GameState.getState().getCharacter().getRightHand();
-		if (rightItem != null && rightItem.equals(getItem("<item>"))) {
-			GameState.getState().getCharacter().setRightHand(null);
-		}
-		
 	}
 
 }

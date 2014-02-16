@@ -1,0 +1,7 @@
+package org.adventure.random;
+
+public enum SkillType {
+	 SWORD, KNIFE, AXE, BOW, XBOW, SLING, SPEAR, TWO_HANDDED_SWORD, TWO_HANDED_AXE, HAND_TO_HAND,
+	 SHIELD, HEAVY_ARMOR, LIGHT_ARMOR,
+	 PARRY_MELEE, PARRY_RANGED;
+}

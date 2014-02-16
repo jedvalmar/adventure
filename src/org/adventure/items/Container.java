@@ -26,20 +26,24 @@ public class Container extends Item implements IContainer {
 	}
 
 	
-	
 	@Override
-	public String getDescription() {
+	public String getLongDescription() {
 		if (isContentsVisible()) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(super.getDescription());
-			sb.append(getContentsPrefix());
+			if (super.getDescription() != null) {
+				sb.append(super.getLongDescription());
+			}
+			if (getContentsPrefix() != null) {
+				sb.append(getContentsPrefix());
+			}
+			
 			for (IItem item : items) {
 				sb.append(item.getDescription());
 				sb.append(",");
 			}
 			return sb.toString();
 		}
-		return super.getDescription();
+		return super.getLongDescription();
 	}
 
 	public int getVolumeCapacity() {
@@ -62,21 +66,30 @@ public class Container extends Item implements IContainer {
 		return this;
 	}
 	
+	
+	
+	@Override
+	public boolean canAddItem(IItem item) {
+		return item.getVolume() <= this.getVolumeCapacity() - this.getVolume();
+	}
+
+	@Override
+	public boolean canRemoveItem(IItem item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.adventure.ICOntainer#addItem(org.adventure.Item)
 	 */
 	@Override
-	public boolean addItem(IItem item) {
-		//TODO: Check make sure there is capacity for the item.
-		//TODO: Need to get the current volume of the contents.
-			if (item.getVolume() > this.getVolumeCapacity() - this.getVolume()) {
-				System.out.println(item.getName() +" doesn't fit.");
-			}
-			else {
-				this.items.add(item);
-				return true;
-			}			
-		return false;
+	public void addItem(IItem item) {
+		this.items.add(item);	
+	}
+
+	@Override
+	public void removeItem(IItem item) {
+		this.items.remove(item);
 	}
 
 	@Override
@@ -128,7 +141,7 @@ public class Container extends Item implements IContainer {
 	@Override
 	public IItem getItem(String itemName) {
 		for (IItem item : this.items) {
-			if (itemName.equals(item.getName())) {
+			if (itemName.toLowerCase().equals(item.getName().toLowerCase())) {
 				return item;
 			}
 		}

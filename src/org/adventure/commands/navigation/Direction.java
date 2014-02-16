@@ -5,7 +5,7 @@ public enum Direction {
 	SOUTH("S","South","Go South"), 
 	EAST, 
 	WEST,
-	DOOR("Go Door");
+	DOOR("Door", "Go Door");
 	
 	private String[] validValues;
 	private Direction(String... validValues) {

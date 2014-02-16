@@ -1,28 +1,26 @@
 package org.adventure.commands;
 
-import org.adventure.GameState;
-import org.adventure.items.Item;
+import org.adventure.PlayerCharacter;
+import org.adventure.items.IItem;
 
 public abstract class ItemCommand extends Action {
 	Command command;
 	@Override
-	public void action(Command command) {
+	public void action(Command command, PlayerCharacter character) {
 		this.command = command;
 	}
 
 
-	public Item getItem(String itemToken) {
-		String itemName = this.command.getItemMap().get(itemToken);
-		Item item = (Item)GameState.getState().getCurrentRoom().getItem(itemName);
+	public IItem getItem(String itemToken, PlayerCharacter character) {
+		String itemName = this.command.getItem(itemToken);
+		IItem item = character.getCurrentRoom().getItem(itemName);
 		if (item == null) {
-			item = (Item)GameState.getState().getCharacter().getLeftHand();
-			if (item == null || item.getName().equals(itemName) == false) {
-				item = (Item)GameState.getState().getCharacter().getRightHand();
-			}
+			item = character.getItem(itemName);
 		}
-		if (item != null && item.commandAllowed(this)) {
+		if (item != null && item.commandAllowed(this, character)) {
 			return item;			
 		}
+		character.sendMessage(new StringBuilder("Could not find the ").append(itemName).toString());
 		return null;
 	}
 

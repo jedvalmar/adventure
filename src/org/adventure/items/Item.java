@@ -3,6 +3,8 @@ package org.adventure.items;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adventure.IContainer;
+import org.adventure.PlayerCharacter;
 import org.adventure.commands.Action;
 import org.adventure.commands.CommandCondition;
 
@@ -12,6 +14,7 @@ public class Item implements IItem {
 	private String longDescription;
 	private int volume;
 	private int weight;
+	private IContainer container;
 	private Map<Action, CommandCondition> commandConditionMap = new HashMap<Action, CommandCondition>();
 	
 	public Item() {
@@ -101,10 +104,10 @@ public class Item implements IItem {
 		return this;
 	}
 	
-	public boolean commandAllowed(Action command) {
+	public boolean commandAllowed(Action command, PlayerCharacter character) {
 		CommandCondition commandCondition = this.commandConditionMap.get(command);
 		if (commandCondition != null) {
-			return commandCondition.conditional(command.getState());			
+			return commandCondition.conditional(character);			
 		}
 		return true;
 	}
@@ -116,6 +119,26 @@ public class Item implements IItem {
 
 	@Override
 	public boolean is(String name) {
-		return this.getName().equals(name);
+		return this.getName().toLowerCase().equals(name);
 	}
+
+	public IContainer getContainer() {
+		return container;
+	}
+
+	public boolean setContainer(IContainer container) {
+		if (container.canAddItem(this)) {
+			if (this.container == null || this.container.canRemoveItem(this)) {
+				if (this.container != null) {
+					this.container.removeItem(this);					
+				}
+				this.container = container;	
+				this.container.addItem(this);
+				return true;				
+			}
+		}
+		return false;
+	}
+	
+	
 }

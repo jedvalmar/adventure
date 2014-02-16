@@ -1,6 +1,6 @@
 package org.adventure.commands;
 
-import org.adventure.GameState;
+import org.adventure.PlayerCharacter;
 import org.adventure.items.IItem;
 
 public class WearCommand extends ItemCommand {
@@ -10,18 +10,25 @@ public class WearCommand extends ItemCommand {
 	}
 	
 	@Override
-	public void action(Command command) {
-		super.action(command);
-		IItem leftHandItem = getState().getCharacter().getLeftHand();
-		IItem rightHandItem = getState().getCharacter().getRightHand();
+	public void action(Command command, PlayerCharacter character) {
+		super.action(command, character);
+		IItem leftHandItem = character.getLeftHand();
+		IItem rightHandItem = character.getRightHand();
 		
-		if (getItem("<item>").equals(rightHandItem)) {
-			GameState.getState().getCharacter().wear(getItem("<item>"));
-			getState().getCharacter().setRightHand(null);
-		}
-		else if (getItem("<item>").equals(leftHandItem)) {
-			GameState.getState().getCharacter().wear(getItem("<item>"));
-			getState().getCharacter().setLeftHand(null);
+		IItem item = getItem("<item>", character);
+		if (item != null) {
+			if (item.equals(rightHandItem)) {
+				character.setRightHand(null);
+			}
+			else if (item.equals(leftHandItem)) {
+				character.setLeftHand(null);
+			}	
+			if (character.wear(item)) {
+				character.sendMessage(new StringBuilder("You put on the ").append(command.getItem("<item>")).toString());				
+			}
+			else {
+				
+			}
 		}
 	}
 }

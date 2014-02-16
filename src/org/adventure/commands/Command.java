@@ -48,20 +48,25 @@ public class Command {
 		return cmd;
 	}
 	
-	public Map<String, String> getItemMap() {
-		return itemMap;
+	public String getItem(String itemToken) {
+		return itemMap.get(itemToken);
 	}
 
+	public boolean hasItem(String itemToken) {
+		return itemMap.containsKey(itemToken);
+	}
+	
 	public boolean matches(String commandPattern) {
 		// Convert command pattern into regular expression.
 		// take <item> from <container> .. Convert to "take .* from .*" and regex match it.
 		//Build regex from command pattern.
 		String[] keyWords = itemPattern.split(commandPattern);
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder("^");
         for(String s : keyWords) {
         	sb.append(s);
         	sb.append(".*");
         }
+        sb.append("$");
         Pattern p = Pattern.compile(sb.toString());
         boolean meetsPattern =  p.matcher(this.cmd).find();
         if (meetsPattern) {

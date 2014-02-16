@@ -2,14 +2,14 @@ package org.adventure.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adventure.GameState;
+import org.adventure.PlayerCharacter;
 
 
 public abstract class Action {
-
+		
 		private List<String> commandPatters = new ArrayList<String>();
 		
-		public abstract void action(Command command);
+		public abstract void action(Command command, PlayerCharacter character);
 
 		public Action addCommandPattern(String... commandPattern) {
 			for (String string : commandPattern) {
@@ -26,7 +26,5 @@ public abstract class Action {
 			}
 			return false;
 		}
-		public GameState getState() {
-			return GameState.getState();
-		}
+	
 }

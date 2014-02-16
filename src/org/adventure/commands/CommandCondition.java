@@ -1,8 +1,9 @@
 package org.adventure.commands;
 
-import org.adventure.GameState;
+import org.adventure.PlayerCharacter;
+
 
 public abstract class CommandCondition {
 
-		public abstract boolean conditional(GameState state);
+		public abstract boolean conditional(PlayerCharacter character);
 }

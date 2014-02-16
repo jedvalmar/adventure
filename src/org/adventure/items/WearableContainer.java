@@ -2,23 +2,20 @@ package org.adventure.items;
 
 import org.adventure.IContainer;
 
-public class WearableContainer extends Wearable implements IContainer {
-
-	private Container container = new Container();
+public class WearableContainer extends Container implements IContainer, IWearable {
+	private WearableType wearableType;
 	
 	public WearableContainer(WearableType wearableType, int volumeCapacity) {
-		super(wearableType);
-		container.setVolumeCapacity(volumeCapacity);
+		super();
+		setVolumeCapacity(volumeCapacity);
 	}
 
-	@Override
-	public boolean addItem(IItem item) {
-		return container.addItem(item);
+	public WearableType getWearableType() {
+		return wearableType;
 	}
 
-	@Override
-	public IItem getItem(String itemName) {
-		return container.getItem(itemName);
+	public void setWearableType(WearableType wearableType) {
+		this.wearableType = wearableType;
 	}
 
 }

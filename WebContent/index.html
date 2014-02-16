@@ -1,0 +1,22 @@
+<html>
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+   	<script src="./app.js"/>
+    <script>
+    $( document ).ready(function() {
+        console.log( "document loaded" );
+    });
+ 
+    $( window ).load(function() {
+        console.log( "window loaded" );
+    });
+    </script>
+  <head><title>Example :: Spring Application</title></head>
+  <body style="height:100%">
+    <h1>Room: <div id="room_name"/></h1>
+    <div id="description"></div>
+    In the room with you is <div id="characters"></div>
+    Items <div id="items"></div>
+    <div id="messages" name="text" style="height:70%"></div>
+    <input name="cmd" type="text"/>
+  </body>
+</html>
