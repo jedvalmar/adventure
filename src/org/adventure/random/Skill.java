@@ -3,11 +3,11 @@ package org.adventure.random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Skill implements IRandom {
-	SkillType weaponType;
+	SkillType skillType;
 	int level;
-	public Skill(SkillType weaponType, int level) {
+	public Skill(SkillType skillType, int level) {
 		this.level = level;
-		this.weaponType = weaponType;
+		this.skillType = skillType;
 	}
 	
 	public boolean check(int level) {

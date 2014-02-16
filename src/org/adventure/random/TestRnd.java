@@ -9,8 +9,8 @@ public abstract class TestRnd {
 		int i =10000;
 		int x = 0;
 		while (i-- > 0) {
-			int attack   = (int) new Skill(null, 1).getValue();
-			int defense   = (int) new Skill(null, 5).getValue();
+			int attack   = (int) new Skill(null, 2).getValue();
+			int defense   = (int) new Skill(null, 1).getValue();
 			if (attack > defense) {
 				x++;
 			}
