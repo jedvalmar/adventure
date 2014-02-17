@@ -1,6 +1,5 @@
 package org.adventure;
 
-import org.adventure.items.armor.Armor;
 
 public class BodyPart {
 
@@ -9,7 +8,6 @@ public class BodyPart {
 	private int health = 100;
 	//Some way to store injuries.
 	private Injury injury;
-	private Armor armor = new Armor();
 	
 	public BodyPart(BodyPartType bodyPartType, String name, int health) {
 		super();
@@ -41,12 +39,4 @@ public class BodyPart {
 	public void setInjury(Injury injury) {
 		this.injury = injury;
 	}
-	public Armor getArmor() {
-		return armor;
-	}
-	public void setArmor(Armor armor) {
-		this.armor = armor;
-	}
-	
-	
 }

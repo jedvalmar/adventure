@@ -3,6 +3,7 @@ package org.adventure.commands;
 import org.adventure.PlayerCharacter;
 import org.adventure.items.IItem;
 import org.adventure.items.IWearable;
+import org.adventure.items.armor.Armor;
 
 public class RemoveCommand extends ItemCommand {
 	public RemoveCommand() {
@@ -16,9 +17,15 @@ public class RemoveCommand extends ItemCommand {
 		IItem item = getItem("<item>", character);
 		if (item != null) {
 			if (character.getFreeHands() > 0) {
-				if (item instanceof IWearable && character.isWearing(item)) {
-					IWearable wearable = (IWearable) item;
-					character.unWear(wearable);
+				if (character.isWearing(item)) {
+					if (item instanceof IWearable) {
+						IWearable wearable = (IWearable) item;
+						character.unWear(wearable);
+					}
+					else if (item instanceof Armor) {
+						Armor armor = (Armor) item;
+						character.unWear(armor);
+					}
 					character.sendMessage(new StringBuilder("You remove ").append(command.getItem("<item>")).toString());
 				}
 				else {

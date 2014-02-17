@@ -13,14 +13,17 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.adventure.commands.combat.AttackCommand;
 import org.adventure.items.IItem;
 import org.adventure.items.IWearable;
 import org.adventure.items.WearableType;
+import org.adventure.items.armor.Armor;
 import org.adventure.items.weapons.DamageType;
 import org.adventure.items.weapons.Weapon;
-import org.adventure.random.IRandom;
 import org.adventure.random.Skill;
 import org.adventure.random.SkillType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -29,11 +32,14 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PlayerCharacter implements IContainer {
+	Logger log = LoggerFactory.getLogger(AttackCommand.class);
+	
 	private UUID id = UUID.randomUUID();
 	@JsonIgnore
 	private WebSocketSession session;
 	private final AtomicInteger busyFor = new AtomicInteger();
 	private List<BodyPart> bodyParts = new ArrayList<BodyPart>();
+	private Map<BodyPartType, Armor> armorMap = new HashMap<BodyPartType, Armor>();
 	private List<IContainer> containers = new ArrayList<IContainer>();
 	private IItem leftHand;
 	private IItem rightHand;
@@ -58,7 +64,7 @@ public class PlayerCharacter implements IContainer {
 	public PlayerCharacter() {
 		super();
 		defaultWeapon.setName("a fist");
-		defaultWeapon.addDamage(DamageType.BLUNT, 1, 30);
+		defaultWeapon.addDamage("punch",DamageType.BLUNT, 1, 3);
 		bodyParts.add(new BodyPart(BodyPartType.ARM,"Left Arm",100));
 		bodyParts.add(new BodyPart(BodyPartType.ARM,"Right Arm",100));
 		bodyParts.add(new BodyPart(BodyPartType.NECK,"Neck",100));
@@ -90,11 +96,9 @@ public class PlayerCharacter implements IContainer {
 		this.bodyParts = bodyParts;
 	}
 
-
-
 	public int calculateDamage(Map<DamageType, Integer> damages, BodyPart bodyPart) {
-		int damage = bodyPart.getArmor().calculateDamage(damages);
-		this.health = this.health - damage;
+		int damage = this.armorMap.get(bodyPart.getBodyPartType()).calculateDamage(damages, bodyPart);
+		removeHealth(damage);
 		return damage;
 	}
 	
@@ -195,9 +199,31 @@ public class PlayerCharacter implements IContainer {
 	}
 
 	public void unWear(IWearable wearable) {
-		List<IWearable> warnClothingOfType = this.clothing.get(wearable.getWearableType());
-		if (warnClothingOfType != null && warnClothingOfType.contains(wearable)) {
-			warnClothingOfType.remove(warnClothingOfType.indexOf(wearable));
+		if (getFreeHands() > 0) {
+			List<IWearable> warnClothingOfType = this.clothing.get(wearable.getWearableType());
+			if (warnClothingOfType != null && warnClothingOfType.contains(wearable)) {
+				warnClothingOfType.remove(warnClothingOfType.indexOf(wearable));
+			}
+			addItem(wearable);
+		}
+		else {
+			sendMessage("Your hands are full.");
+		}
+	}
+	
+	public void unWear(Armor armor) {
+		if (getFreeHands() > 0) {
+			if (armorMap.containsValue(armor)) {
+				for (BodyPartType bodyPartType : armorMap.keySet()) {
+					if (armor.equals(armorMap.get(bodyPartType))) {
+						armorMap.put(bodyPartType, null);
+					}
+				}
+			}
+			addItem(armor);
+		}
+		else {
+			sendMessage("Your hands are full.");
 		}
 	}
 	
@@ -267,6 +293,19 @@ public class PlayerCharacter implements IContainer {
 				sendMessage(new StringBuilder("How about removing one you already have on?").toString());
 			}
 		}
+		else if (item instanceof Armor) {
+			Armor armor = (Armor) item;
+			for (BodyPartType bodyPartType : armor.getBodyPartTypes()) {
+				if (armorMap.containsKey(bodyPartType)) {
+					sendMessage(new StringBuilder("How about removing one you already have on?").toString());
+					return false;
+				}
+			}
+			for (BodyPartType bodyPartType : armor.getBodyPartTypes()) {
+				armorMap.put(bodyPartType, armor);
+				added = true;
+			}
+		}
 		return added;
 	}
 
@@ -288,6 +327,13 @@ public class PlayerCharacter implements IContainer {
 			List<IWearable> warnClothingOfType = this.clothing.get(wearable.getWearableType());
 			if (warnClothingOfType != null && warnClothingOfType.contains(wearable)) {
 				return true;
+			}
+		}
+		else if (item instanceof Armor) {
+			for (Armor armor : this.armorMap.values()) {
+				if (armor.equals(item)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -323,6 +369,12 @@ public class PlayerCharacter implements IContainer {
 				}
 			}
 		}
+		for (BodyPartType partType : this.armorMap.keySet()) {
+			Armor armor = this.armorMap.get(partType);
+			if (armor.is(itemName)) {
+				return armor;
+			}
+		}
 		return null;
 	}
 
@@ -347,7 +399,12 @@ public class PlayerCharacter implements IContainer {
     		sb.append("{\"messages\":[\"");
     		sb.append(message);
     		sb.append("\"]}");
-			this.session.sendMessage(new TextMessage(sb.toString()));
+    		if (this.session != null && this.session.isOpen()) {
+    			this.session.sendMessage(new TextMessage(sb.toString()));    			
+    		}
+    		else {
+    			log.debug(sb.toString());
+    		}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -366,6 +423,9 @@ public class PlayerCharacter implements IContainer {
     		if (this.session != null && this.session.isOpen()) {
     			this.session.sendMessage(new TextMessage(sb.toString()));    			
     		}
+    		else {
+    			log.debug(sb.toString());
+    		}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -378,6 +438,9 @@ public class PlayerCharacter implements IContainer {
 	
 	public void removeHealth(int amount) {
 		this.health = this.health - amount;
+		if (this.health <= 0) {
+			log.debug("Death");
+		}
 	}
 
 	public int getBusyFor() {
@@ -414,7 +477,7 @@ public class PlayerCharacter implements IContainer {
 	
 	public void setBusyFor(int busyFor) {
 		int initalValue = this.busyFor.getAndAdd(busyFor);
-		if (initalValue <= 0) {
+		if (initalValue <= 0 && timerTask == null) {
 			timer.scheduleAtFixedRate(getTimerTask(), 0, 1000);
 		}
 	}
