@@ -442,7 +442,9 @@ public class PlayerCharacter implements IContainer {
 			log.debug("Death");
 		}
 	}
-
+	public int getHealth() {
+		return this.health;
+	}
 	public int getBusyFor() {
 		return busyFor.get();
 	}
